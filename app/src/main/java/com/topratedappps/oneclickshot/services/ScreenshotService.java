@@ -161,6 +161,7 @@ public class ScreenshotService extends Service {
     };
 
     private void takeScreenshot() {
+        Toast.makeText(this, "Button taped.", Toast.LENGTH_SHORT).show();
         startCapture();
     }
 
