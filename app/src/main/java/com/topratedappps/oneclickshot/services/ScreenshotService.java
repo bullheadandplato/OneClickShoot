@@ -30,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.topratedappps.oneclickshot.R;
 import com.topratedappps.oneclickshot.activities.MainActivity;
@@ -229,25 +230,39 @@ public class ScreenshotService extends Service {
             projection.stop();
             vdisplay.release();
             projection = null;
+
         }
+        captureIcon.post(new Runnable() {
+            @Override
+            public void run() {
+                captureIcon.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void startCapture() {
-        projection = mgr.getMediaProjection(resultCode, resultData);
-        it = new ImageTransmogrifier(this);
+        try {
+            captureIcon.setVisibility(View.GONE);
+            projection = mgr.getMediaProjection(resultCode, resultData);
+            it = new ImageTransmogrifier(this);
 
-        MediaProjection.Callback cb = new MediaProjection.Callback() {
-            @Override
-            public void onStop() {
-                vdisplay.release();
-            }
-        };
+            MediaProjection.Callback cb = new MediaProjection.Callback() {
+                @Override
+                public void onStop() {
+                    vdisplay.release();
+                }
+            };
+            vdisplay = projection.createVirtualDisplay("andshooter",
+                    it.getWidth(), it.getHeight(),
+                    getResources().getDisplayMetrics().densityDpi,
+                    VIRT_DISPLAY_FLAGS, it.getSurface(), null, handler);
+            projection.registerCallback(cb, handler);
+            //hide our view from screenshot
 
-        vdisplay = projection.createVirtualDisplay("andshooter",
-                it.getWidth(), it.getHeight(),
-                getResources().getDisplayMetrics().densityDpi,
-                VIRT_DISPLAY_FLAGS, it.getSurface(), null, handler);
-        projection.registerCallback(cb, handler);
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+            Toast.makeText(this, "A screenshot is already being captured!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private WindowManager.LayoutParams getParams() {

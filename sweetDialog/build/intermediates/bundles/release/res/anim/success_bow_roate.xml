@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rotate
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
     android:interpolator="@android:anim/accelerate_interpolator"
     android:fromDegrees="-45"
     android:toDegrees="-405"
@@ -8,5 +7,4 @@
     android:pivotY="50%"
     android:duration="300"
     android:fillAfter="true"
-    android:startOffset="215">
-</rotate>
+    android:startOffset="215"></rotate>
